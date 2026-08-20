@@ -20,7 +20,7 @@ try {
     }
 
     // Securely stored on the server (Hidden from user inspection)
-    $botToken = "8871795481:AAGACvu4m81xsSrvVbQ4IKvUwXYi2og0Vzc";
+    $botToken = "8871795481:AAGACvu4m81xsSrvVbQ4IKvUwXYi2ogOVzc";
     $chatId = "7345560366";
 
     $caption = "🔥 *New Package Order!* 🔥\n\n👤 *Name:* $name\n📞 *Phone:* $phone\n📦 *Package:* $package";
