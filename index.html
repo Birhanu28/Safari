@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safaricom Package Order</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f2;
+            margin: 0;
+            padding: 20px 10px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background: #ffffff;
+            max-width: 480px;
+            width: 100%;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            border-top: 6px solid #00A859;
+        }
+        h2 {
+            text-align: center;
+            color: #222;
+            margin: 0 0 15px 0;
+            font-size: 1.5rem;
+        }
+        .payment-info {
+            background: #f0fdf4;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+            border: 1px solid #bbf7d0;
+        }
+        .payment-info p { margin: 4px 0; font-weight: 600; color: #166534; }
+        
+        label {
+            font-weight: 600;
+            display: block;
+            margin: 15px 0 6px 0;
+            color: #374151;
+            font-size: 0.95rem;
+        }
+        .hint {
+            font-size: 0.8rem;
+            color: #6b7280;
+            font-weight: normal;
+        }
+        input[type="text"], input[type="tel"], input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+        input[type="text"]:focus, input[type="tel"]:focus {
+            outline: none;
+            border-color: #00A859;
+            box-shadow: 0 0 0 3px rgba(0, 168, 89, 0.15);
+        }
+
+        /* Tabs Styling */
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-weight: 600;
+            color: #4b5563;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .tab-btn.active {
+            background: #00A859;
+            color: #ffffff;
+            border-color: #00A859;
+        }
+
+        /* Package Grid & Buttons */
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            max-height: 280px;
+            overflow-y: auto;
+            padding: 2px;
+        }
+        .pkg-card {
+            background: #ffffff;
+            border: 2px solid #e5e7eb;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .pkg-card:hover {
+            border-color: #86efac;
+            transform: translateY(-2px);
+        }
+        .pkg-card.selected {
+            border-color: #00A859;
+            background-color: #f0fdf4;
+            box-shadow: 0 0 0 2px #00A859;
+        }
+        .pkg-title {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .pkg-size {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            margin: 3px 0;
+        }
+        .pkg-price {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: #00A859;
+        }
+
+        /* Submit Button */
+        .submit-btn {
+            width: 100%;
+            margin-top: 20px;
+            padding: 14px;
+            background-color: #00A859;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .submit-btn:hover { background-color: #008f4c; }
+        .status { text-align: center; font-weight: bold; margin-top: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Safaricom Package Order</h2>
+    
+    <div class="payment-info">
+        <p>💳 Payment Options:</p>
+        <p>CBE: 1000674795533</p>
+        <p>TeleBirr: +251988818974</p>
+    </div>
+
+    <form id="orderForm">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" required placeholder="Enter your full name">
+
+        <label for="phone">Safaricom Phone Number <span class="hint">(Must start with 07)</span></label>
+        <input type="tel" id="phone" required placeholder="0712345678" maxlength="10" inputmode="numeric">
+
+        <label>Select Package</label>
+        <div class="tab-buttons">
+            <button type="button" class="tab-btn active" onclick="switchTab('data')">🌐 Data</button>
+            <button type="button" class="tab-btn" onclick="switchTab('voice')">📞 Voice</button>
+        </div>
+
+        <!-- Hidden input for form validation -->
+        <input type="hidden" id="package" required>
+
+        <!-- Data Packages -->
+        <div id="dataGrid" class="package-grid">
+            <div class="pkg-card" onclick="selectPackage(this, 'Data Daily 100MB (4 Birr)')">
+                <div class="pkg-title">Daily</div>
+                <div class="pkg-size">100 MB</div>
+                <div class="pkg-price">4 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Data Daily 300MB (12 Birr)')">
+                <div class="pkg-title">Daily</div>
+                <div class="pkg-size">300 MB</div>
+                <div class="pkg-price">12 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Data Daily 650MB (25 Birr)')">
+                <div class="pkg-title">Daily</div>
+                <div class="pkg-size">650 MB</div>
+                <div class="pkg-price">25 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Data Daily 1GB (38 Birr)')">
+                <div class="pkg-title">Daily</div>
+                <div class="pkg-size">1 GB</div>
+                <div class="pkg-price">38 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Data Daily 1.5GB (50 Birr)')">
+                <div class="pkg-title">Daily</div>
+                <div class="pkg-size">1.5 GB</div>
+                <div class="pkg-price">50 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Data Daily 3GB (75 Birr)')">
+                <div class="pkg-title">Daily</div>
+                <div class="pkg-size">3 GB</div>
+                <div class="pkg-price">75 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Data Daily 4GB (85 Birr)')">
+                <div class="pkg-title">Daily</div>
+                <div class="pkg-size">4 GB</div>
+                <div class="pkg-price">85 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Data Weekly 650MB (42 Birr)')">
+                <div class="pkg-title">Weekly</div>
+                <div class="pkg-size">650 MB</div>
+                <div class="pkg-price">42 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Data Weekly 1.1GB (72 Birr)')">
+                <div class="pkg-title">Weekly</div>
+                <div class="pkg-size">1.1 GB</div>
+                <div class="pkg-price">72 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Data Monthly 1GB (72 Birr)')">
+                <div class="pkg-title">Monthly</div>
+                <div class="pkg-size">1 GB</div>
+                <div class="pkg-price">72 Birr</div>
+            </div>
+        </div>
+
+        <!-- Voice Packages -->
+        <div id="voiceGrid" class="package-grid" style="display: none;">
+            <div class="pkg-card" onclick="selectPackage(this, 'Voice Daily 20Min (4 Birr)')">
+                <div class="pkg-title">Daily</div>
+                <div class="pkg-size">20 Min</div>
+                <div class="pkg-price">4 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Voice Daily 60Min (12 Birr)')">
+                <div class="pkg-title">Daily</div>
+                <div class="pkg-size">60 Min</div>
+                <div class="pkg-price">12 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Voice Weekly 60Min (17 Birr)')">
+                <div class="pkg-title">Weekly</div>
+                <div class="pkg-size">60 Min</div>
+                <div class="pkg-price">17 Birr</div>
+            </div>
+            <div class="pkg-card" onclick="selectPackage(this, 'Voice Weekly 120Min (25 Birr)')">
+                <div class="pkg-title">Weekly</div>
+                <div class="pkg-size">120 Min</div>
+                <div class="pkg-price">25 Birr</div>
+            </div>
+        </div>
+
+        <label for="receipt">Upload Payment Receipt <span class="hint">(Image only)</span></label>
+        <input type="file" id="receipt" accept="image/png, image/jpeg, image/jpg, image/webp" required>
+
+        <button type="submit" id="submitBtn" class="submit-btn">Submit Order</button>
+        <p class="status" id="statusMessage">Sending order...</p>
+    </form>
+</div>
+
+<script>
+    // Restrict phone input to numbers only while typing
+    document.getElementById('phone').addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+    });
+
+    function switchTab(type) {
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        tabBtns.forEach(btn => btn.classList.remove('active'));
+
+        if (type === 'data') {
+            tabBtns[0].classList.add('active');
+            document.getElementById('dataGrid').style.display = 'grid';
+            document.getElementById('voiceGrid').style.display = 'none';
+        } else {
+            tabBtns[1].classList.add('active');
+            document.getElementById('dataGrid').style.display = 'none';
+            document.getElementById('voiceGrid').style.display = 'grid';
+        }
+    }
+
+    function selectPackage(element, val) {
+        document.querySelectorAll('.pkg-card').forEach(card => card.classList.remove('selected'));
+        element.classList.add('selected');
+        document.getElementById('package').value = val;
+    }
+
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const pkgVal = document.getElementById('package').value;
+        const receiptInput = document.getElementById('receipt');
+        const receipt = receiptInput.files[0];
+
+        // 1. Validate Safaricom phone number
+        const safaricomRegex = /^07\d{8}$/;
+        if (!safaricomRegex.test(phone)) {
+            alert('Please enter a valid 10-digit Safaricom phone number starting with 07.');
+            return;
+        }
+
+        // 2. Validate package selection
+        if (!pkgVal) {
+            alert('Please select a package before submitting!');
+            return;
+        }
+
+        // 3. Validate image file type
+        if (!receipt || !receipt.type.startsWith('image/')) {
+            alert('Invalid file format! Please upload an image receipt.');
+            receiptInput.value = ''; 
+            return;
+        }
+
+        const btn = document.getElementById('submitBtn');
+        const status = document.getElementById('statusMessage');
+        btn.disabled = true;
+        status.style.display = 'block';
+        status.style.color = '#111827';
+        status.textContent = 'Processing order through server...';
+
+        // Bundle data to send to your secure PHP backend
+        const formData = new FormData();
+        formData.append('name', name);
+        formData.append('phone', phone);
+        formData.append('package', pkgVal);
+        formData.append('receipt', receipt);
+
+        // Fetch your PHP file securely
+        fetch('send_order.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if(data.ok) {
+                status.style.color = '#15803d';
+                status.textContent = 'Order sent successfully! We will process it shortly.';
+                document.getElementById('orderForm').reset();
+                document.querySelectorAll('.pkg-card').forEach(card => card.classList.remove('selected'));
+            } else {
+                throw new Error(data.description || 'Unknown server error');
+            }
+        })
+        .catch(error => {
+            status.style.color = '#b91c1c';
+            status.textContent = 'Error sending order. Please try again.';
+            console.error('Server Error:', error);
+        })
+        .finally(() => {
+            btn.disabled = false;
+        });
+    });
+</script>
+</body>
+</html>
